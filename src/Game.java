@@ -18,28 +18,30 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 	private Player user, computer; 			//class for holding info about players. score and hand symbol
 	private int userSelection = 1; 			//Program starts with user hovering over paper.  
 	private char decision = 'f'; 			//if decision is win, draw or lose. initializing value is f  
-	private String roundEndString = "" ;	//container for the string to declare rounds' result 
+	private String roundEndString = "" ;	//container for the string to declare rounds' result to user
 		
 	private Timer timer;
 	private int delay =	70;
-	
-	boolean quitgame=false;
-	
+		
 	//image container class
 	protected Images i;
 		
 	//gameOver checks for if round is over. noRepeat is used as a flag to not trigger accidental button presses.
 	protected boolean gameOver=false;
 	protected boolean noRepeat = true;
+	protected boolean showControls = false;   //toggle that shows controls to user
 	
 	//controls
 	protected boolean restart= false;
 	protected boolean right=	false;
 	protected boolean left	=	false;
 	protected boolean spacebar = false;
+	protected boolean help = false;
+	protected boolean quitgame=false;
+	protected boolean resetScores=false;
 	
 	//adjusting values too cumbersome to write beforehand
-	protected int scorePunto ,imageWidth,imageHeight;
+	protected int scorePunto ,imageWidth,imageHeight,helpX,helpY ;
 	
 	
 	public Game(int x,int y)
@@ -66,6 +68,8 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		scorePunto = (int)(resolutionx/35.2);
 		imageWidth = resolutionx/5;
 		imageHeight = resolutiony/3;
+		helpX = (int)(resolutionx/5);
+		helpY = (int)(resolutiony/4.32);
 	}
 
 	public void paint(Graphics g)
@@ -76,32 +80,48 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		g.drawImage(Images.backgroundImage,0,i.backgroundY,resolutionx,resolutiony,null);
 		g.drawImage(Images.backgroundImage,0,i.backgroundY2,resolutionx,resolutiony,null);
 		
-		//score cards
 		Font f = new Font("Comic Sans MS",Font.BOLD,scorePunto);
 		g.setFont(f);
 		g.setColor(Color.BLACK);
-		g.drawString("You:"+ user.score, 10, 30);
-		g.drawString("Cpu:"+ computer.score, 10, (int)(resolutiony/1.14) );
 		
-		//user selections
-		g.drawImage(Images.rockImage,i.rockX,i.playerRowY, imageWidth, imageHeight, null);
-		g.drawImage(Images.paperImage,i.paperX,i.playerRowY , imageWidth, imageHeight, null);
-		g.drawImage(Images.scissorsImage,i.scissorsX,i.playerRowY, imageWidth, imageHeight, null);
+		if(help)
+		{
+			g.drawString("A or Left Arrow to move left",helpX,helpY );
+			g.drawString("D or Right Arrow to move right",helpX,helpY+2*scorePunto );
+			g.drawString("Space to select symbol in the square",helpX,helpY+4*scorePunto );
+			g.drawString("R to move on to the next round after a round ends",helpX,helpY+6*scorePunto );
+			g.drawString("Esc to quit game",helpX,helpY+8*scorePunto);
+			g.drawString("N to reset scores and start a new game",helpX,helpY+10*scorePunto);
+		}	
 		
-		//square to indicate which symbol is selected by user
-		g.drawImage(Images.squareImage,i.squareX,i.playerRowY , imageWidth, imageHeight, null);
+		else
+		{
+			g.drawString("Hold H for controls",(int)(resolutionx/2.56),30);
+			
+			//score cards
+			g.drawString("You:"+ user.score, 10, 30);
+			g.drawString("Cpu:"+ computer.score, 10, (int)(resolutiony/1.14) );
 		
-		//x s to indicate computer's selections, revealed after user locks a symbol 
-		g.drawImage(Images.xImage,(int)(resolutionx/7.68),i.computerRowY, imageWidth, imageHeight,null);
-		g.drawImage(Images.xImage,(int)(resolutionx/1.536),i.computerRowY, imageWidth, imageHeight,null);	
-		g.drawImage(Images.computerHand,(int)(resolutionx/2.56),i.computerRowY, imageWidth, imageHeight,null);
+			//user selections
+			g.drawImage(Images.rockImage,i.rockX,i.playerRowY, imageWidth, imageHeight, null);
+			g.drawImage(Images.paperImage,i.paperX,i.playerRowY , imageWidth, imageHeight, null);
+			g.drawImage(Images.scissorsImage,i.scissorsX,i.playerRowY, imageWidth, imageHeight, null);
+		
+			//square to indicate which symbol is selected by user
+			g.drawImage(Images.squareImage,i.squareX,i.playerRowY , imageWidth, imageHeight, null);
+		
+			//x s to indicate computer's selections, revealed after user locks a symbol 
+			g.drawImage(Images.xImage,(int)(resolutionx/7.68),i.computerRowY, imageWidth, imageHeight,null);
+			g.drawImage(Images.xImage,(int)(resolutionx/1.536),i.computerRowY, imageWidth, imageHeight,null);	
+			g.drawImage(Images.computerHand,(int)(resolutionx/2.56),i.computerRowY, imageWidth, imageHeight,null);
+		}
 		
 		//if statement to draw the result of round to the screen only when the round ends.
 		if(decision!='f')
 		{		
-		f = new Font("Comic Sans MS",Font.BOLD,(int)(resolutionx/19.2));
-		g.setFont(f);
-		g.drawString(roundEndString, (int)(resolutionx/4), (int)(resolutiony/1.93) );
+			f = new Font("Comic Sans MS",Font.BOLD,(int)(resolutionx/19.2));
+			g.setFont(f);
+			g.drawString(roundEndString, (int)(resolutionx/4), (int)(resolutiony/1.93) );
 		}	
 		 
 	}
@@ -208,6 +228,15 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			restart =true;
 		}
 		
+		if(e.getKeyCode()==KeyEvent.VK_H)
+		{
+			help = true;
+		}	
+		
+		if(e.getKeyCode()==KeyEvent.VK_N)
+		{
+			resetScores = true;
+		}	
 	}
 
 	@Override
@@ -236,6 +265,16 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			noRepeat=true;
 		}
 		
+		if(e.getKeyCode()==KeyEvent.VK_H)
+		{
+			help = false;
+			noRepeat=true;
+		}	
+		
+		if(e.getKeyCode()==KeyEvent.VK_N)
+		{
+			resetScores = false;
+		}	
 	}
 
 	@Override
@@ -247,6 +286,16 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		{
 			System.exit(0);
 		}
+		
+		if(resetScores)
+		{
+			Images.computerHand= Images.xImage;
+			gameOver = false;
+			noRepeat = false;
+			decision = 'f';
+			user.score = 0;
+			computer.score = 0;
+		}	
 		
 		if(gameOver)
 		{
@@ -293,7 +342,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 				//computer selects immediately after user presses spacebar
 				Random rngValue = new Random();
 				computer.Selection(rngValue.nextInt(3)); 
-			
+				
 				//user's selection is compared and winner is decided
 				user.Selection(userSelection);
 				char uSymbol = user.selectedSymbol;
