@@ -29,8 +29,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 	//gameOver checks for if round is over. noRepeat is used as a flag to not trigger accidental button presses.
 	protected boolean gameOver=false;
 	protected boolean noRepeat = true;
-	protected boolean showControls = false;   //toggle that shows controls to user
-	
+		
 	//controls
 	protected boolean restart= false;
 	protected boolean right=	false;
