@@ -14,18 +14,17 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public class Game extends JPanel implements ActionListener,KeyListener {
 
-	int resolutionx,resolutiony; 			// get the resolution from main function to adjust interface.
-	private Player user, computer; 			//class for holding info about players. score and hand symbol
+	int resolutionx,resolutiony; 			// get the resolution from main function to adjust interface.	
 	private int userSelection = 1; 			//Program starts with user hovering over paper.  
 	private char decision = 'f'; 			//if decision is win, draw or lose. initializing value is f  
 	private String roundEndString = "" ;	//container for the string to declare rounds' result to user
 		
 	private Timer timer;
 	private int delay =	70;
-		
-	//image container class
-	protected Images i;
-		
+			
+	protected Images i;						//image container class
+	private Player user, computer; 			//class for holding info about players. score and hand symbol
+	
 	//gameOver checks for if round is over. noRepeat is used as a flag to not trigger accidental button presses.
 	protected boolean gameOver=false;
 	protected boolean noRepeat = true;
@@ -36,7 +35,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 	protected boolean left	=	false;
 	protected boolean spacebar = false;
 	protected boolean help = false;
-	protected boolean quitgame=false;
+	protected boolean quitGame=false;
 	protected boolean resetScores=false;
 	
 	//adjusting values too cumbersome to write beforehand
@@ -65,8 +64,8 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 	public void adjustResolutionValues()
 	{
 		scorePunto = (int)(resolutionx/35.2);
-		imageWidth = resolutionx/5;
-		imageHeight = resolutiony/3;
+		imageWidth = (int)(resolutionx/5);
+		imageHeight = (int)(resolutiony/3);
 		helpX = (int)(resolutionx/5);
 		helpY = (int)(resolutiony/4.32);
 	}
@@ -83,6 +82,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		g.setFont(f);
 		g.setColor(Color.BLACK);
 		
+		//show help if button is pressed
 		if(help)
 		{
 			g.drawString("A or Left Arrow to move left",helpX,helpY );
@@ -93,6 +93,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			g.drawString("N to reset scores and start a new game",helpX,helpY+10*scorePunto);
 		}	
 		
+		//continue normally if help isn't pressed
 		else
 		{
 			g.drawString("Hold H for controls",(int)(resolutionx/2.56),30);
@@ -113,15 +114,17 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			g.drawImage(Images.xImage,(int)(resolutionx/7.68),i.computerRowY, imageWidth, imageHeight,null);
 			g.drawImage(Images.xImage,(int)(resolutionx/1.536),i.computerRowY, imageWidth, imageHeight,null);	
 			g.drawImage(Images.computerHand,(int)(resolutionx/2.56),i.computerRowY, imageWidth, imageHeight,null);
+			
+			//if statement to draw the result of round to the screen only when the round ends.
+			if(decision!='f')
+			{		
+				f = new Font("Comic Sans MS",Font.BOLD,(int)(resolutionx/19.2));
+				g.setFont(f);
+				g.drawString(roundEndString, (int)(resolutionx/4), (int)(resolutiony/1.93) );
+			}	
 		}
 		
-		//if statement to draw the result of round to the screen only when the round ends.
-		if(decision!='f')
-		{		
-			f = new Font("Comic Sans MS",Font.BOLD,(int)(resolutionx/19.2));
-			g.setFont(f);
-			g.drawString(roundEndString, (int)(resolutionx/4), (int)(resolutiony/1.93) );
-		}	
+		
 		 
 	}
 
@@ -219,7 +222,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		}
 		if(e.getKeyCode()==KeyEvent.VK_ESCAPE)
 		{
-			quitgame=true;		
+			quitGame=true;		
 		}	
 		
 		if(e.getKeyCode()== KeyEvent.VK_R) 
@@ -281,7 +284,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 
 		timer.start();
 		
-		if(quitgame)
+		if(quitGame)
 		{
 			System.exit(0);
 		}
@@ -296,7 +299,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			computer.score = 0;
 		}	
 		
-		if(gameOver)
+		if(gameOver||help)
 		{
 			if(restart)
 			{
@@ -351,8 +354,7 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 				
 				//based on the winner, roundEndString is adjusted and score is given; draw gives no points 
 				adjustScoreandText(decision);
-				
-				
+								
 				gameOver=true;
 				noRepeat=false;
 			}
