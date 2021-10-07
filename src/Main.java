@@ -7,8 +7,8 @@ public class Main {
 	public static void main(String[] args) {
 		JFrame m = new JFrame();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = (int)(screenSize.getWidth()/2);
-		int height = (int)(screenSize.getHeight()/2);
+		int width = (int)(screenSize.getWidth());
+		int height = (int)(screenSize.getHeight());
 		Game newGame = new Game(width,height);
 		m.setBounds(0, 0, width, height);
 		m.setTitle("Rock Paper Scissors");

@@ -96,11 +96,11 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		//continue normally if help isn't pressed
 		else
 		{
-			g.drawString("Hold H for controls",(int)(resolutionx/2.56),30);
+			g.drawString("Hold H for controls",(int)(resolutionx/2.56),scorePunto);
 			
 			//score cards
-			g.drawString("You:"+ user.score, 10, 30);
-			g.drawString("Cpu:"+ computer.score, 10, (int)(resolutiony/1.14) );
+			g.drawString("You:"+ user.getScore(), 10, scorePunto);
+			g.drawString("Cpu:"+ computer.getScore(), 10, (int)(resolutiony/1.14) );
 		
 			//user selections
 			g.drawImage(Images.rockImage,i.rockX,i.playerRowY, imageWidth, imageHeight, null);
@@ -133,12 +133,12 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 		if(decision == 'w')
 		{
 			roundEndString = "You won this round!!";
-			user.score++;
+			user.addScore();
 		}
 		if(decision == 'l')
 		{
 			roundEndString = "You lost this round!!";
-			computer.score++;
+			computer.addScore();
 		}
 		if(decision == 'd')
 		{					
@@ -295,8 +295,8 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 			gameOver = false;
 			noRepeat = false;
 			decision = 'f';
-			user.score = 0;
-			computer.score = 0;
+			user.setScore(0);
+			computer.setScore(0);
 		}	
 		
 		if(gameOver||help)
@@ -347,8 +347,8 @@ public class Game extends JPanel implements ActionListener,KeyListener {
 				
 				//user's selection is compared and winner is decided
 				user.Selection(userSelection);
-				char uSymbol = user.selectedSymbol;
-				char cSymbol = computer.selectedSymbol;
+				char uSymbol = user.getSymbol();
+				char cSymbol = computer.getSymbol();
 				
 				decision = decideWinner(uSymbol,cSymbol);
 				
